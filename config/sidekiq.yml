@@ -1,0 +1,3 @@
+:schedule:
+  SslMonitorJob:
+    every: '20m'

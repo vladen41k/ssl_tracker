@@ -1,0 +1,46 @@
+version: "3.8"
+
+volumes:
+  bundler_gems:
+  redis_store:
+  postgres_store:
+
+services:
+  pg:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres_store:/var/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+    ports:
+      - 8080:5432
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - 8081:6379
+    volumes:
+      - redis_store:/data
+  sidekiq:
+    build: .
+    restart: always
+    command: bundle exec sidekiq
+    volumes:
+      - .:/ssl_tracker/
+    depends_on:
+      - rails
+      - redis
+  rails:
+    build: .
+    restart: always
+    command: bundle exec rails server -b 0.0.0.0 -p 3000
+    ports:
+      - 3000:3000
+    volumes:
+      - bundler_gems:/usr/local/bundle/
+      - .:/ssl_tracker/
+    depends_on:
+      - redis
+      - pg

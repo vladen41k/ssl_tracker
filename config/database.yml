@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username: postgres
+  password: example
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: pg
+  port: 5432
+
+development:
+  <<: *default
+  database: ssl_tracker_development
+
+test:
+  <<: *default
+  database: ssl_tracker_test
+
+#production:
+#  <<: *default
+#  database: ssl_tracker_production
+#  username: ssl_tracker
+#  password: <%#= ENV['SSL_TRACKER_DATABASE_PASSWORD'] %>
